@@ -1,3 +1,5 @@
+//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class NewHomeWork extends StatefulWidget {
@@ -34,87 +36,87 @@ class _NewHomeWorkState extends State<NewHomeWork> {
         ),
         backgroundColor: Color(0xfff4f4f4),
       ),
-      body: Column(
+      body: Stack(
         children: <Widget>[
-          Container(
-            width: ancho,
-            height: alto * 0.55,
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: Image.asset('assets/images/images6.png'),
+          Column(
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: Image.asset('assets/images/images6.png'),
+                ),
               ),
-            ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Text('Add New Work', style: TextStyle(color: Colors.grey)),
-                  Form(
-                    key: _mykey,
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 40.0, right: 40.0, top: 10.0, bottom: 10.0),
-                          child: TextFormField(
-                            controller: _titleController,
-                            decoration: InputDecoration(
-                                icon: Icon(Icons.edit), labelText: 'Title'),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Title field is empty';
-                              }
-                            },
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 40.0, right: 40.0, top: 10.0, bottom: 10.0),
-                          child: TextFormField(
-                            controller: _subjectController,
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Subcject field is empty';
-                              }
-                            },
-                            decoration: InputDecoration(
-                              
-                                icon: Icon(Icons.edit), labelText: 'Subject'),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: InkWell(
-                      onTap: () {
-                        if (_mykey.currentState.validate()) {
-                          //guardar en la base de datos
-                        }
-                      },
-                      child: Container(
-                        width: ancho,
-                        height: alto * 0.06,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          gradient: LinearGradient(colors: [
-                            Color(0xff6441a9),
-                            Color(0xff634db5),
-                          ]),
-                        ),
-                        child: Center(
-                            child: Text('Add',
-                                style: TextStyle(color: Colors.white))),
+              Text('Add New Work', style: TextStyle(color: Colors.grey)),
+              Form(
+                key: _mykey,
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 40.0, right: 40.0, top: 10.0, bottom: 10.0),
+                      child: TextFormField(
+                        controller: _titleController,
+                        decoration: InputDecoration(
+                            icon: Icon(Icons.edit), labelText: 'Title'),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Title field is empty';
+                          }
+                        },
                       ),
                     ),
-                  )
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 40.0, right: 40.0, top: 10.0, bottom: 10.0),
+                      child: TextFormField(
+                        controller: _subjectController,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Subcject field is empty';
+                          }
+                        },
+                        decoration: InputDecoration(
+                            icon: Icon(Icons.edit), labelText: 'Subject'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: InkWell(
+                  onTap: () {
+                    if (_mykey.currentState.validate()) {
+                      //guardar en la base de datos
+                      Firestore.instance
+                          .collection('works')
+                          .document()
+                          .setData({
+                        'title': _titleController.text,
+                        'subject': _subjectController.text
+                      });
+                      _titleController.clear();
+                      _subjectController.clear();
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: Container(
+                    width: ancho,
+                    height: alto * 0.06,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      gradient: LinearGradient(colors: [
+                        Color(0xff6441a9),
+                        Color(0xff634db5),
+                      ]),
+                    ),
+                    child: Center(
+                        child:
+                            Text('Add', style: TextStyle(color: Colors.white))),
+                  ),
+                ),
+              )
+            ],
           ),
         ],
       ),
